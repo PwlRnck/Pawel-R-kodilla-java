@@ -2,6 +2,8 @@ package com.kodilla.testing.shape;
 
 import org.junit.*;
 
+import static org.junit.Assert.assertNull;
+
 /**
  * Created by PR on 20.07.2017.
  */
@@ -41,7 +43,7 @@ public class ShapeCollectorTestSuite {
         Square square = new Square(1);
         shapeCollector.addFigure(square);
         //When
-        boolean result = shapeCollector.removeFigure(1);
+        boolean result = shapeCollector.removeFigure(square);
         //Then
         Assert.assertTrue(result);
         Assert.assertEquals(0,shapeCollector.figures.size());
@@ -70,10 +72,10 @@ public class ShapeCollectorTestSuite {
         shapeCollector.addFigure(circle);
         Triangle triangle = new Triangle(1,2,3);
         shapeCollector.addFigure(triangle);
+        Exception e =null;
         //When
 
         //Then
     }
-*/
-
+    */
 }
