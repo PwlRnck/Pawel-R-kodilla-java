@@ -12,6 +12,29 @@ public class ForumStatistics {
     protected Double commentsPerUser;
     protected Double commentsPerPost;
 
+    public int getUsersNumber() {
+        return usersNumber;
+    }
+
+    public int getPostsNumber() {
+        return postsNumber;
+    }
+
+    public int getCommentsNumber() {
+        return commentsNumber;
+    }
+
+    public Double getPostsPerUser() {
+        return postsPerUser;
+    }
+
+    public Double getCommentsPerUser() {
+        return commentsPerUser;
+    }
+
+    public Double getCommentsPerPost() {
+        return commentsPerPost;
+    }
 
     public void calculateAdvStatistics(Statistics statistics){
         usersNumber = (statistics.usersNames()).size();

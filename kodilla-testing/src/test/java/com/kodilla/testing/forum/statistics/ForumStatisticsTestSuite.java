@@ -37,10 +37,8 @@ public class ForumStatisticsTestSuite {
         if(usersNumber==0){b = null;}else{b = (double)commentsNumber/usersNumber;}
         if(postsNumber==0){c = null;}else{c = (double)commentsNumber/postsNumber;}
 
-        Assert.assertEquals(a,forumStatistics.postsPerUser);
-        Assert.assertEquals(b,forumStatistics.commentsPerUser);
-        Assert.assertEquals(c,forumStatistics.commentsPerPost);
+        Assert.assertEquals(a,forumStatistics.getPostsPerUser());
+        Assert.assertEquals(b,forumStatistics.getCommentsPerUser());
+        Assert.assertEquals(c,forumStatistics.getCommentsPerPost());
     }
-
-
 }
