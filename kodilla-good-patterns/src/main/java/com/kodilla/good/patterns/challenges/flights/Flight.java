@@ -23,7 +23,6 @@ public class Flight {
         this.arrTime = LocalTime.of(arrHour, arrMins);
         this.arrDayOfWeek = DayOfWeek.of(arrDayOfWeek);
         flightNumber += 1;
-
     }
 
     public String getDepAirport() {
@@ -129,9 +128,4 @@ public class Flight {
             return nextFlightDateTime;
         }
     }
-
-
-
-
-
 }
