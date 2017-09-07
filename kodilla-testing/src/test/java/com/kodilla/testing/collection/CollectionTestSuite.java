@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class CollectionTestSuite {
 
-    public int testCaseNo = 0;
+    private static int testCaseNo = 0;
 
     @BeforeClass
     public static void beforeClass(){
