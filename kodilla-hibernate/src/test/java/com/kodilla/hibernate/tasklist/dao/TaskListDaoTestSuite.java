@@ -1,6 +1,6 @@
 package com.kodilla.hibernate.tasklist.dao;
 
-import com.kodilla.hibernate.task.Task;
+
 import com.kodilla.hibernate.tasklist.TaskList;
 import org.junit.Assert;
 import org.junit.Test;
