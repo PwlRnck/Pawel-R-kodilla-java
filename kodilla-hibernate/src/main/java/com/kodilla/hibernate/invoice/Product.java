@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "PRODUCT")
+@Table(name = "PRODUCTS")
 public class Product {
     private int id;
     private String name;
@@ -37,8 +37,8 @@ public class Product {
 
     @OneToMany(
             targetEntity = Item.class,
+            //cascade=CascadeType.ALL,
             mappedBy = "product",
-            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     public List<Item> getItems() {
