@@ -2,21 +2,27 @@ package com.kodilla.patterns2.decorator.pizza;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PizzaOrderTestSuite {
-    
-        @Test
+
+    @Autowired
+    private BasicPizzaOrder theOrder;
+
+    @Test
         public void testBasicPizzaOrderGetCost() {
             //Given
-            PizzaOrder theOrder = new BasicPizzaOrder();
             System.out.println("Order cost: " + theOrder.getCost());
             //When
             BigDecimal calculatedCost = theOrder.getCost();
@@ -27,7 +33,6 @@ public class PizzaOrderTestSuite {
         @Test
         public void testBasicPizzaOrderGetDescription() {
             //Given
-            PizzaOrder theOrder = new BasicPizzaOrder();
             System.out.println(theOrder.getDescription());
             //When
             String description = theOrder.getDescription();
@@ -38,10 +43,10 @@ public class PizzaOrderTestSuite {
         @Test
         public void testPizzaWithHamOrderGetCost() {
             //Given
-            PizzaOrder theOrder = new HamDecorator(new BasicPizzaOrder());
-            System.out.println("Order cost: " + theOrder.getCost());
+            PizzaOrder theOrder2 = new HamDecorator(theOrder);
+            System.out.println("Order cost: " + theOrder2.getCost());
             //When
-            BigDecimal calculatedCost = theOrder.getCost();
+            BigDecimal calculatedCost = theOrder2.getCost();
             //Then
             assertEquals(new BigDecimal(10), calculatedCost);
         }
@@ -49,10 +54,10 @@ public class PizzaOrderTestSuite {
         @Test
         public void testPizzaWithHamOrderGetCostGetDescription() {
             //Given
-            PizzaOrder theOrder = new HamDecorator(new BasicPizzaOrder());
-            System.out.println(theOrder.getDescription());
+            PizzaOrder theOrder3 = new HamDecorator(theOrder);
+            System.out.println(theOrder3.getDescription());
             //When
-            String description = theOrder.getDescription();
+            String description = theOrder3.getDescription();
             //Then
             assertEquals("Pizza with cheese and ketchup + ham", description);
         }
@@ -60,10 +65,10 @@ public class PizzaOrderTestSuite {
         @Test
         public void testPizzaWithHamAndOnionsGetCost() {
             //Given
-            PizzaOrder theOrder = new OnionsDecorator(new HamDecorator(new BasicPizzaOrder()));
-            System.out.println("Order cost: " + theOrder.getCost());
+            PizzaOrder theOrder4 = new OnionsDecorator(new HamDecorator(theOrder));
+            System.out.println("Order cost: " + theOrder4.getCost());
             //When
-            BigDecimal calculatedCost = theOrder.getCost();
+            BigDecimal calculatedCost = theOrder4.getCost();
             //Then
             assertEquals(new BigDecimal(12), calculatedCost);
         }
@@ -71,10 +76,10 @@ public class PizzaOrderTestSuite {
         @Test
         public void testPizzaWithHamAndOnionsGetDescription() {
             //Given
-            PizzaOrder theOrder = new OnionsDecorator(new HamDecorator(new BasicPizzaOrder()));
-            System.out.println(theOrder.getDescription());
+            PizzaOrder theOrder5 = new OnionsDecorator(new HamDecorator(theOrder));
+            System.out.println(theOrder5.getDescription());
             //When
-            String description = theOrder.getDescription();
+            String description = theOrder5.getDescription();
             //Then
             assertEquals("Pizza with cheese and ketchup + ham + onions", description);
         }
@@ -82,10 +87,10 @@ public class PizzaOrderTestSuite {
         @Test
         public void testPizzaWithHamAndOnionsandSalamiGetCost() {
             //Given
-            PizzaOrder theOrder = new SalamiDecorator(new OnionsDecorator(new HamDecorator(new BasicPizzaOrder())));
-            System.out.println("Order cost: " + theOrder.getCost());
+            PizzaOrder theOrder6 = new SalamiDecorator(new OnionsDecorator(new HamDecorator(theOrder)));
+            System.out.println("Order cost: " + theOrder6.getCost());
             //When
-            BigDecimal calculatedCost = theOrder.getCost();
+            BigDecimal calculatedCost = theOrder6.getCost();
             //Then
             assertEquals(new BigDecimal(42), calculatedCost);
         }
@@ -93,13 +98,26 @@ public class PizzaOrderTestSuite {
         @Test
         public void testPizzaWithHamAndOnionsandSalamiGetDescription() {
             //Given
-            PizzaOrder theOrder = new SalamiDecorator(new OnionsDecorator(new HamDecorator(new BasicPizzaOrder())));
-            System.out.println(theOrder.getDescription());
+            PizzaOrder theOrder7 = new SalamiDecorator(new OnionsDecorator(new HamDecorator(theOrder)));
+            System.out.println(theOrder7.getDescription());
             //When
-            String description = theOrder.getDescription();
+            String description = theOrder7.getDescription();
             //Then
             assertEquals("Pizza with cheese and ketchup + ham + onions + salami", description);
         }
+
+    @Test
+    public void testContext() {
+        //Given
+        ApplicationContext context =
+                new AnnotationConfigApplicationContext("com.kodilla.patterns2.decorator.pizza");
+
+        //When & Then
+        System.out.println("===== Beans list: ==== >>");
+        Arrays.stream(context.getBeanDefinitionNames())
+                .forEach(System.out::println);
+        System.out.println("<< ===== Beans list ====");
+    }
 }
 
 
