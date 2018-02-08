@@ -23,11 +23,11 @@ public class Game {
     Random random = new Random();
 
     public Game() {
-        functionKeys.put("1", "stone");
-        functionKeys.put("2", "paper");
-        functionKeys.put("3", "scissors");
-        functionKeys.put("x", "end the game");
-        functionKeys.put("n", "restart the game");
+        functionKeys.put(FunctionKeys.STONE.key(), FunctionKeys.STONE.keyFunction());
+        functionKeys.put(FunctionKeys.PAPER.key(), FunctionKeys.PAPER.keyFunction());
+        functionKeys.put(FunctionKeys.SCISSORS.key(), FunctionKeys.SCISSORS.keyFunction());
+        functionKeys.put(FunctionKeys.END.key(), FunctionKeys.END.keyFunction());
+        functionKeys.put(FunctionKeys.NEW.key(), FunctionKeys.NEW.keyFunction());
         scorePlayer = 0;
         scoreComputer = 0;
     }
@@ -42,64 +42,69 @@ public class Game {
         roundNumber = Math.max(scorePlayer, scoreComputer);
 
         while (roundNumber < numberOfRounds) {
-            System.out.println("\n" + name + ", please make a move.");
-
-            movePlayerCode = scanner.nextLine().toString();
-            quitConfirmation(movePlayerCode);
-
-            try {
-                getMove(movePlayerCode);
-            } catch (WrongFunctionKeyException e) {
-                System.out.println(e);
-                play(this.inputData,this.scorePlayer,this.scoreComputer);
-            }
-
-            //fair play case
-            //moveComputerCode = random.nextInt(3) + 1;
-
-            //foul play case
-            int[] options = {
-                Integer.parseInt(movePlayerCode),
-                Integer.parseInt(movePlayerCode) + 1 <= 3 ? Integer.parseInt(movePlayerCode) + 1 : 1,
-                Integer.parseInt(movePlayerCode) + 1 <= 3 ? Integer.parseInt(movePlayerCode) + 1 : 1,
-                Integer.parseInt(movePlayerCode) + 2 > 3 ? Integer.parseInt(movePlayerCode) - 1 : 1
-            };
-            moveComputerCode = options[random.nextInt(4)];
-
-            //all cases
-            moveComputer = functionKeys.get(Integer.toString(moveComputerCode));
-           printResults(movePlayer, moveComputer, this.scorePlayer, this.scoreComputer);
-
+            playARound();
         }
 
-        System.out.println("\nWould you like to play another game (n) or quit the game (x)?");
+        System.out.println("\nWould you like to play another game (" + FunctionKeys.NEW.key() + ") or quit the game (" + FunctionKeys.END.key() + ")?");
         decision = scanner.nextLine().toString();
 
-        if (decision.equals("n")) {
+        if (decision.equals(FunctionKeys.NEW.key())) {
                 RpsRunner.main(null);
         } else {
                 quit();
         }
     }
 
+    private void playARound() {
+
+        System.out.println("\n" + name + ", please make a move.");
+
+        movePlayerCode = scanner.nextLine().toString();
+        quitConfirmation(movePlayerCode);
+
+        try {
+            getMove(movePlayerCode);
+        } catch (WrongFunctionKeyException e) {
+            System.out.println(e);
+            play(this.inputData,this.scorePlayer,this.scoreComputer);
+        }
+
+        //fair play case
+        //moveComputerCode = random.nextInt(3) + 1;
+
+        //foul play case
+        int[] options = {
+                Integer.parseInt(movePlayerCode),
+                Integer.parseInt(movePlayerCode) + 1 <= 3 ? Integer.parseInt(movePlayerCode) + 1 : 1,
+                Integer.parseInt(movePlayerCode) + 1 <= 3 ? Integer.parseInt(movePlayerCode) + 1 : 1,
+                Integer.parseInt(movePlayerCode) + 2 > 3 ? Integer.parseInt(movePlayerCode) - 1 : 1
+        };
+        moveComputerCode = options[random.nextInt(4)];
+
+        //all cases
+        moveComputer = functionKeys.get(Integer.toString(moveComputerCode));
+        printResults(movePlayer, moveComputer, this.scorePlayer, this.scoreComputer);
+
+    }
+
 
     private int score(String resultA, String resultB) {
-        if(resultA.equals("scissors") && resultB.equals("paper"))
+        if(resultA.equals(FunctionKeys.SCISSORS.keyFunction()) && resultB.equals(FunctionKeys.PAPER.keyFunction()))
                  return 1;
-        if(resultA.equals("paper") && resultB.equals("stone"))
+        if(resultA.equals(FunctionKeys.PAPER.keyFunction()) && resultB.equals(FunctionKeys.STONE.keyFunction()))
             return 1;
-        if(resultA.equals("stone") && resultB.equals("scissors"))
+        if(resultA.equals(FunctionKeys.STONE.keyFunction()) && resultB.equals(FunctionKeys.SCISSORS.keyFunction()))
             return 1;
         return 0;
     }
 
     private String quitConfirmation(String movePlayerCode) {
 
-        while(movePlayerCode.equals("x") || movePlayerCode.equals("n")) {
-            if (movePlayerCode.equals("x")) {
+        while(movePlayerCode.equals(FunctionKeys.END.key()) || movePlayerCode.equals(FunctionKeys.NEW.key())) {
+            if (movePlayerCode.equals(FunctionKeys.END.key())) {
                 System.out.println(name + ", do you really want to quit (y/n)?");
                 movePlayerCode = scanner.nextLine().toString();
-                if (movePlayerCode.equals("n")) {
+                if (movePlayerCode.equals(FunctionKeys.NEW.key())) {
                     System.out.println("\n" + name + ", please make a move.");
                     movePlayerCode = scanner.nextLine();
                 } else {
@@ -108,7 +113,7 @@ public class Game {
             } else {
                 System.out.println(name + ", do you really want to restart the game (y/n)?");
                 movePlayerCode = scanner.nextLine().toString();
-                if (movePlayerCode.equals("n")) {
+                if (movePlayerCode.equals(FunctionKeys.NEW.key())) {
                     System.out.println("\n" + name + ", please make a move.");
                     movePlayerCode = scanner.nextLine();
                 } else {
@@ -128,35 +133,43 @@ public class Game {
     }
 
     private void printResults(String movePlayer, String moveComputer, int scorePlayer, int scoreComputer) {
+
             System.out.println("\nYour move: " + movePlayer + ". | Computer's move: " + moveComputer + ".");
 
             this.scorePlayer = scorePlayer;
             this.scoreComputer = scoreComputer;
 
-            if(score(movePlayer,moveComputer) == 1) {
-                System.out.println("\n" + name + ", you won this round!");
-                this.scorePlayer++;
-            } else if(score(moveComputer,movePlayer) == 1) {
-                System.out.println("\n" + name + ", you lost this round.");
-                this.scoreComputer++;
-            } else {
-                System.out.println("This round ended in a draw.");
-            }
-
+            printRoundResult();
             roundNumber = Math.max(this.scorePlayer,this.scoreComputer);
+            printCurrentResult();
+    }
 
-            if(roundNumber == numberOfRounds) {
-                System.out.println("\nThe final result is:");
-                System.out.println(name + "-Computer   " + this.scorePlayer + ":" + this.scoreComputer);
+    private void printRoundResult() {
+        if(score(movePlayer,moveComputer) == 1) {
+            System.out.println("\n" + name + ", you won this round!");
+            this.scorePlayer++;
+        } else if(score(moveComputer,movePlayer) == 1) {
+            System.out.println("\n" + name + ", you lost this round.");
+            this.scoreComputer++;
+        } else {
+            System.out.println("This round ended in a draw.");
+        }
+    }
+
+    private void printCurrentResult() {
+        if(roundNumber == numberOfRounds) {
+            System.out.println("\nThe final result is:");
+            System.out.println(name + "-Computer   " + this.scorePlayer + ":" + this.scoreComputer);
+            if(this.scorePlayer>this.scoreComputer) {
+                System.out.println("\n" + name + ", you won this game! Congrats!!!");
             } else {
-                System.out.println("\nThe current result is:");
-                System.out.println(name + "-Computer   " + this.scorePlayer + ":" + this.scoreComputer);
-                if(this.scorePlayer>this.scoreComputer) {
-                    System.out.println("\n" + name + ", you won this game! Congrats!!!");
-                } else {
-                    System.out.println("\n" + name + ", unfortunately this time you lost. Have another try.");
-                }
+                System.out.println("\n" + name + ", unfortunately this time you lost. Have another try.");
             }
+        } else {
+            System.out.println("\nThe current result is:");
+            System.out.println(name + "-Computer   " + this.scorePlayer + ":" + this.scoreComputer);
+
+        }
     }
 
     private void quit() {
